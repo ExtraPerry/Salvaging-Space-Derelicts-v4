@@ -1,9 +1,12 @@
-package com.extraperry.game.Model;
+package com.extraperry.game.Model.Game;
 
 import java.util.HashMap;
 
 /**
- * This class represents a room in the game
+ * The room class represents a room in the game
+ * 
+ * @author ExtraPerry
+ * @version 1.0.0
  */
 public class Room {
     
@@ -26,6 +29,24 @@ public class Room {
         this.setDescription(description);
         this.exits = new HashMap<String, Room>();
         this.inventory = new Inventory(10000);
+    }
+
+    //Methods
+    /**
+     * Adds an exit to the room in the given direction if it alread exists it will be overwritten
+     * @param direction
+     * @param room
+     */
+    public void addExit(final String direction, final Room room) {
+        this.exits.put(direction, room);
+    }
+    /**
+     * Returns the room in the given direction if it exists or null if it doesn't
+     * @param direction
+     * @return
+     */
+    public Room getExit(String direction) {
+        return this.exits.get(direction);
     }
 
     //Getters
@@ -74,21 +95,4 @@ public class Room {
         this.description = description;
     }
 
-    //Methods
-    /**
-     * Adds an exit to the room in the given direction if it alread exists it will be overwritten
-     * @param direction
-     * @param room
-     */
-    public void addExit(final String direction, final Room room) {
-        this.exits.put(direction, room);
-    }
-    /**
-     * Returns the room in the given direction if it exists or null if it doesn't
-     * @param direction
-     * @return
-     */
-    public Room getExit(String direction) {
-        return this.exits.get(direction);
-    }
 }

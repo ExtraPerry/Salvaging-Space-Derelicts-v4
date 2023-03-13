@@ -1,5 +1,11 @@
-package com.extraperry.game.Model;
+package com.extraperry.game.Model.Game;
 
+/**
+ * Item class represents an item in the game
+ * 
+ * @author ExtraPerry
+ * @version 1.0.0
+ */
 public class Item {
 
     //Attributes

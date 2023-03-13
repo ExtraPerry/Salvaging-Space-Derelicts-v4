@@ -1,12 +1,15 @@
-package com.extraperry.game.Model;
+package com.extraperry.game.Model.Game;
 
 import java.util.ArrayList;
 
-import com.extraperry.game.Exceptions.InventoryFull;
-import com.extraperry.game.Exceptions.ItemNotInInventory;
+import com.extraperry.game.Model.Exception.InventoryFull;
+import com.extraperry.game.Model.Exception.ItemNotInInventory;
 
 /**
  * Represents an inventory of items
+ * 
+ * @author ExtraPerry
+ * @version 1.0.0
  */
 public class Inventory {
 
@@ -26,6 +29,46 @@ public class Inventory {
         this.setMaxVolume(maxVolume);
         this.setTotalVolume(0);
         this.setTotalPrice(0);
+    }
+
+    //Methods
+    /**
+     * Adds an item to the inventory if there is enough space (volume)
+     * @param item
+     * @throws InventoryFull
+     */
+    public void addItem(final Item item) throws InventoryFull {
+        if (this.getTotalVolume() + item.getVolume() <= this.getMaxVolume()) {
+            this.getItems().add(item);
+            this.setTotalVolume(this.getTotalVolume() + item.getVolume());
+            this.setTotalPrice(this.getTotalPrice() + item.getPrice());
+        } else {
+            throw new InventoryFull();
+        }
+    }
+    /**
+     * Removes an item from the inventory if it is in the inventory 
+     * @param item
+     * @throws ItemNotInInventory
+     */
+    public void removeItem(final Item item) throws ItemNotInInventory {
+        if(this.getItems().remove(item)){
+            this.setTotalVolume(this.getTotalVolume() - item.getVolume());
+            this.setTotalPrice(this.getTotalPrice() - item.getPrice());
+        }else{
+            throw new ItemNotInInventory();
+        }
+    }
+    /**
+     * Transfers an item from one inventory to another if the item is in the first inventory and if there is enough space in the second inventory
+     * @param item
+     * @param inventory
+     * @throws InventoryFull
+     * @throws ItemNotInInventory
+     */
+    public void transferItem(final Item item, final Inventory inventory) throws InventoryFull, ItemNotInInventory {
+        this.removeItem(item);
+        inventory.addItem(item);
     }
 
     //Getters
@@ -81,43 +124,4 @@ public class Inventory {
         this.totalPrice = totalPrice;
     }
 
-    //Methods
-    /**
-     * Adds an item to the inventory if there is enough space (volume)
-     * @param item
-     * @throws InventoryFull
-     */
-    public void addItem(final Item item) throws InventoryFull {
-        if (this.getTotalVolume() + item.getVolume() <= this.getMaxVolume()) {
-            this.getItems().add(item);
-            this.setTotalVolume(this.getTotalVolume() + item.getVolume());
-            this.setTotalPrice(this.getTotalPrice() + item.getPrice());
-        } else {
-            throw new InventoryFull();
-        }
-    }
-    /**
-     * Removes an item from the inventory if it is in the inventory 
-     * @param item
-     * @throws ItemNotInInventory
-     */
-    public void removeItem(final Item item) throws ItemNotInInventory {
-        if(this.getItems().remove(item)){
-            this.setTotalVolume(this.getTotalVolume() - item.getVolume());
-            this.setTotalPrice(this.getTotalPrice() - item.getPrice());
-        }else{
-            throw new ItemNotInInventory();
-        }
-    }
-    /**
-     * Transfers an item from one inventory to another if the item is in the first inventory and if there is enough space in the second inventory
-     * @param item
-     * @param inventory
-     * @throws InventoryFull
-     * @throws ItemNotInInventory
-     */
-    public void transferItem(final Item item, final Inventory inventory) throws InventoryFull, ItemNotInInventory {
-        this.removeItem(item);
-        inventory.addItem(item);
-    }
 }

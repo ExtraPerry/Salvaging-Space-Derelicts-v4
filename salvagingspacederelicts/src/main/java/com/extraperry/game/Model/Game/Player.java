@@ -1,11 +1,17 @@
-package com.extraperry.game.Model;
+package com.extraperry.game.Model.Game;
 
 import java.util.Stack;
 
-import com.extraperry.game.Exceptions.LifeSupportIsFull;
-import com.extraperry.game.Exceptions.PlayerIsDead;
-import com.extraperry.game.Exceptions.RoomDoesNotExist;
+import com.extraperry.game.Model.Exception.LifeSupportIsFull;
+import com.extraperry.game.Model.Exception.PlayerIsDead;
+import com.extraperry.game.Model.Exception.RoomDoesNotExist;
 
+/**
+ * The player class represents the player of the game
+ * 
+ * @author ExtraPerry
+ * @version 1.0.0
+ */
 public class Player {
     
     //Attributes
@@ -31,6 +37,62 @@ public class Player {
         this.inventory = new Inventory(10000);
         this.setLifeSupport(100);
         this.setAlive(true);
+    }
+
+    //Methods
+    /**
+     * Decreases the life support of the player
+     * @param amount
+     * @throws PlayerIsDead
+     */
+    public void decreaseLifeSupport(final int amount) throws PlayerIsDead {
+
+        if(this.getLifeSupport() - amount <= 0 || this.getLifeSupport() == 0){
+            this.setLifeSupport(0);
+            this.setAlive(false);
+            throw new PlayerIsDead();
+        }else{
+            this.setLifeSupport(this.getLifeSupport() - amount);
+        }
+    }
+    /**
+     * Increases the life support of the player if it is not full
+     * @param amount
+     * @throws LifeSupportIsFull
+     */
+    public void increaseLifeSupport(final int amount) throws LifeSupportIsFull {
+        if(this.getLifeSupport() == 100){
+            throw new LifeSupportIsFull();
+        }
+        if(this.getLifeSupport() + amount > 100){
+            this.setLifeSupport(100);
+        }else{
+            this.setLifeSupport(this.getLifeSupport() + amount);
+        }
+    }
+    /**
+     * Moves the player to the previous room
+     * @throws RoomDoesNotExist
+     */
+    public void moveBack() throws RoomDoesNotExist {
+        if (!this.previousRooms.isEmpty()) {
+            this.setCurrentRoom(this.previousRooms.pop());
+        }else{
+            throw new RoomDoesNotExist();
+        }
+    }
+    /**
+     * Moves the player to a new room if the room exists
+     * @param direction
+     * @throws RoomDoesNotExist
+     */
+    public void move(final String direction) throws RoomDoesNotExist {
+        if (this.currentRoom.getExits().containsKey(direction)) {
+            this.previousRooms.push(this.currentRoom);
+            this.setCurrentRoom(this.currentRoom.getExits().get(direction));
+        }else{
+            throw new RoomDoesNotExist();
+        }
     }
 
     //Getters
@@ -100,59 +162,4 @@ public class Player {
         this.isAlive = isAlive;
     }
 
-    //Methods
-    /**
-     * Decreases the life support of the player
-     * @param amount
-     * @throws PlayerIsDead
-     */
-    public void decreaseLifeSupport(final int amount) throws PlayerIsDead {
-
-        if(this.getLifeSupport() - amount <= 0 || this.getLifeSupport() == 0){
-            this.setLifeSupport(0);
-            this.setAlive(false);
-            throw new PlayerIsDead();
-        }else{
-            this.setLifeSupport(this.getLifeSupport() - amount);
-        }
-    }
-    /**
-     * Increases the life support of the player if it is not full
-     * @param amount
-     * @throws LifeSupportIsFull
-     */
-    public void increaseLifeSupport(final int amount) throws LifeSupportIsFull {
-        if(this.getLifeSupport() == 100){
-            throw new LifeSupportIsFull();
-        }
-        if(this.getLifeSupport() + amount > 100){
-            this.setLifeSupport(100);
-        }else{
-            this.setLifeSupport(this.getLifeSupport() + amount);
-        }
-    }
-    /**
-     * Moves the player to the previous room
-     * @throws RoomDoesNotExist
-     */
-    public void moveBack() throws RoomDoesNotExist {
-        if (!this.previousRooms.isEmpty()) {
-            this.setCurrentRoom(this.previousRooms.pop());
-        }else{
-            throw new RoomDoesNotExist();
-        }
-    }
-    /**
-     * Moves the player to a new room if the room exists
-     * @param direction
-     * @throws RoomDoesNotExist
-     */
-    public void move(final String direction) throws RoomDoesNotExist {
-        if (this.currentRoom.getExits().containsKey(direction)) {
-            this.previousRooms.push(this.currentRoom);
-            this.setCurrentRoom(this.currentRoom.getExits().get(direction));
-        }else{
-            throw new RoomDoesNotExist();
-        }
-    }
 }
